@@ -1,10 +1,14 @@
-"""
-Core functionality for the AI Accountability Infrastructure.
+"""Core functionality for AI Trust."""
+from ai_trust.core.canonicalization import canonicalize
+from ai_trust.core.crypto import KeyPair, create_keypair, sign, verify_signature
+from ai_trust.core.receipt import create_receipt, verify_receipt
 
-This package contains the core components and utilities for the AI Accountability system,
-including the Merkle tree implementation, proof generation, and verification logic.
-"""
-
-from .merkle import MerkleTree, Node, MerkleTreeProof, ConsistencyProof
-
-__all__ = ['MerkleTree', 'Node', 'MerkleTreeProof', 'ConsistencyProof']
+__all__ = [
+    "canonicalize",
+    "KeyPair",
+    "create_keypair",
+    "sign",
+    "verify_signature",
+    "create_receipt",
+    "verify_receipt",
+]

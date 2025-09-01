@@ -5,54 +5,24 @@ This package provides tools for creating, signing, and verifying cryptographic r
 for AI model outputs, enabling transparency and accountability in AI systems.
 """
 
+import contextlib
 from importlib.metadata import version
 
 # Set up version
 __version__ = "0.1.0"
 
-try:
+with contextlib.suppress(Exception):
     __version__ = version("ai-trust")
-except Exception:
-    pass
+
 
 # Core components
-from ai_trust.core.canonicalization import (
-    canonicalize,
-    canonical_json_dumps,
-    verify_canonical_equivalence,
-)
-from ai_trust.core.crypto import KeyPair, KeyStore, sign_receipt, verify_receipt, hash_sha256, compute_hmac_sha256
-from ai_trust.core.models import (
-    ExecutionID,
-    InputCommitment,
-    LogEntry,
-    ModelInfo,
-    OutputCommitment,
-    Receipt,
-    ReceiptVersion,
-    Signature,
-    WitnessSignature,
-)
-from .core import MerkleTree, Node, MerkleTreeProof, ConsistencyProof
-from .core.app import create_app
+from ai_trust.core import canonicalize, create_receipt, verify_receipt, verify_signature
 
+# Public API
 __all__ = [
-    # Core functionality
     "canonicalize",
-    "canonical_json_dumps",
-    "verify_canonical_equivalence",
-    "KeyPair",
-    "KeyStore",
-    "sign_receipt",
+    "verify_signature",
+    "create_receipt",
     "verify_receipt",
-    # Models
-    "ExecutionID",
-    "InputCommitment",
-    "LogEntry",
-    "ModelInfo",
-    "OutputCommitment",
-    "Receipt",
-    "ReceiptVersion",
-    "Signature",
-    "WitnessSignature",
+    "__version__",
 ]
