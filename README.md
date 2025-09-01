@@ -41,7 +41,7 @@ python log/server.py
 pytest tests/
 ```
 
-## 📋 Example Receipt
+## Example Receipt
 
 ```json
 {
