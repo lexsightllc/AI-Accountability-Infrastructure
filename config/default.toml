@@ -1,0 +1,18 @@
+[server]
+host = "0.0.0.0"
+port = 8000
+reload = true
+log_level = "info"
+
+[database]
+url = "sqlite:///./ai_trust.db"
+echo = false
+
+[security]
+secret_key = "change-me-in-production"
+algorithm = "HS256"
+access_token_expire_minutes = 30
+
+[logging]
+level = "INFO"
+format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

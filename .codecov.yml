@@ -1,0 +1,17 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+  ignore:
+    - "tests/*"
+    - "examples/*"
+    - "docs/*"
+    - "scripts/*"
+    - "**/__init__.py"
+    - "**/version.py"

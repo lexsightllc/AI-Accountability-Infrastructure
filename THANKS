@@ -1,0 +1,38 @@
+# Thanks
+
+AI Trust is made possible by the following people and projects:
+
+## Core Team
+
+- [Your Name](https://github.com/yourusername)
+
+## Contributors
+
+Thank you to everyone who has contributed to AI Trust!
+
+## Dependencies
+
+AI Trust relies on the following open source projects:
+
+- [Python](https://www.python.org/)
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Pydantic](https://pydantic-docs.helpmanual.io/)
+- [cryptography](https://cryptography.io/)
+- [uvicorn](https://www.uvicorn.org/)
+- [pytest](https://docs.pytest.org/)
+- [mypy](https://mypy.readthedocs.io/)
+- [black](https://black.readthedocs.io/)
+- [isort](https://pycqa.github.io/isort/)
+- [ruff](https://beta.ruff.rs/)
+
+And many more! See pyproject.toml for a complete list of dependencies.
+
+## Special Thanks
+
+- To the open source community for creating and maintaining the tools we depend on
+- To our users for their feedback and support
+- To our contributors for their time and effort
+
+## How to Contribute
+
+We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for more information.
