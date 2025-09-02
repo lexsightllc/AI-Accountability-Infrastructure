@@ -1,0 +1,9 @@
+{
+  "keys": [
+    {
+      "kid": "c72de6fe5cf8fc26ab73b04ad2352e7d88f7444994b632d0f977fbc2ed18e140",
+      "alg": "Ed25519",
+      "public": "CmHEOF0eZd3L0fk_KR--W_Eyt5emIJYurtNN6p1ibzE"
+    }
+  ]
+}
