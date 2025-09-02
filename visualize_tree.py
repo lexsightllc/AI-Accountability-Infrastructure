@@ -342,10 +342,10 @@ class MerkleTreeVisualizer:
                         timestamp = dt.strftime('%Y-%m-%d %H:%M')
                     except (ValueError, TypeError):
                         pass
-                return f"📄 {node['receipt_id']} | {task_id[:12]} | {timestamp}"
+                return f"[RECEIPT] {node['receipt_id']} | {task_id[:12]} | {timestamp}"
         
         # For non-leaf nodes, show the hash
-        return f"🌳 {self._format_hash(node.get('hash', ''))}"
+        return f"[TREE] {self._format_hash(node.get('hash', ''))}"
     
     def build_tree_structure(self, tree_data: Dict[str, Any]) -> Dict[str, Any]:
         """

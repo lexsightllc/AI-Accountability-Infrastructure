@@ -299,17 +299,17 @@ def verify_receipt_file(
         # Print results
         if verbose:
             print(f"Receipt: {receipt_path}")
-            print(f"Valid: {'✅' if result.is_valid else '❌'}")
+            print(f"Valid: {'[VALID]' if result.is_valid else '[INVALID]'}")
             
             if result.warnings:
                 print("\nWarnings:")
                 for warning in result.warnings:
-                    print(f"  ⚠ {warning}")
+                    print(f"  [WARNING] {warning}")
             
             if result.errors:
                 print("\nErrors:")
                 for error in result.errors:
-                    print(f"  ❌ {error}")
+                    print(f"  [ERROR] {error}")
             
             if not result.errors and not result.warnings:
                 print("No issues found!")

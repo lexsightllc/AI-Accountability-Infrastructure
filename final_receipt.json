@@ -1,0 +1,27 @@
+{
+  "receipt_version": "1.0",
+  "execution_id": "ex-20250902015138-35b8114d",
+  "issued_at": "2025-09-02T01:51:38.575975",
+  "issuer": "https://example.com/",
+  "model": {
+    "name": "gpt-4",
+    "version": null,
+    "commit_sha256": null,
+    "parameters": null
+  },
+  "output": {
+    "body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "content_type": "text/plain"
+  },
+  "signature": {
+    "alg": "EdDSA",
+    "kid": "key-20250902014716",
+    "sig": "xjAUV8s11JAZ-eask2EyM4m480FjX5ofAB_SWv9atDxJfYHpbkj4QQVkH1UDnPR_0o8qIgr3DkWppwywwFS5Aw",
+    "issued_at": "2025-09-02T01:51:38.575954+00:00"
+  },
+  "inputs": null,
+  "log_entries": null,
+  "witness_signatures": null,
+  "policy": null,
+  "extensions": null
+}

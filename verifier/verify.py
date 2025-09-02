@@ -99,7 +99,7 @@ class AIReceiptVerifier:
             if not result.valid:
                 return result
         elif self.verbose:
-            print("⚠️  Warning: No public key provided, skipping signature verification")
+            print("[WARNING] No public key provided, skipping signature verification")
         
         return VerificationResult(True, "Receipt verified successfully", {
             'version': receipt['receipt_version'],
@@ -314,7 +314,7 @@ def main():
         with open(args.receipt, 'r') as f:
             receipt_json = f.read()
     except Exception as e:
-        print(f"❌ Error reading receipt file: {e}")
+        print(f"[ERROR] Error reading receipt file: {e}")
         sys.exit(1)
     
     # Load public key if provided
@@ -323,9 +323,9 @@ def main():
         try:
             public_key = load_public_key(args.pubkey)
             if args.verbose:
-                print(f"✅ Loaded public key from {args.pubkey}")
+                print(f"[OK] Loaded public key from {args.pubkey}")
         except Exception as e:
-            print(f"❌ Error loading public key: {e}")
+            print(f"[ERROR] Error loading public key: {e}")
             sys.exit(1)
     
     # Verify receipt
@@ -334,13 +334,13 @@ def main():
     
     # Output result
     if result.valid:
-        print(f"✅ VALID: {result.reason}")
+        print(f"[VALID] {result.reason}")
         if args.verbose and result.details:
-            print("\n📊 Receipt Details:")
+            print("\n[INFO] Receipt Details:")
             for key, value in result.details.items():
                 print(f"   {key}: {value}")
     else:
-        print(f"❌ INVALID: {result.reason}")
+        print(f"[INVALID] {result.reason}")
         sys.exit(1)
 
 

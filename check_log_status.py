@@ -64,24 +64,24 @@ def format_status(status: dict) -> str:
     
     # Health status
     health_status = status.get('status', {}).get('status', 'unknown')
-    health_emoji = "🟢" if health_status == 'healthy' else "🔴"
-    output.append(f"{health_emoji} Status: {health_status.upper()}")
+    health_indicator = "[OK]" if health_status == 'healthy' else "[ERROR]"
+    output.append(f"{health_indicator} Status: {health_status.upper()}")
     
     # Timestamp
     timestamp = status.get('status', {}).get('timestamp')
     if timestamp:
-        output.append(f"🕒 Last Updated: {timestamp}")
+        output.append(f"[TIME] Last Updated: {timestamp}")
     
     # Tree info
     tree_root = status.get('tree_root', {}).get('root_hash', 'N/A')
     tree_size = status.get('tree_size', {}).get('tree_size', 0)
-    output.append(f"🌳 Merkle Tree: {tree_size} entries")
+    output.append(f"[TREE] Merkle Tree: {tree_size} entries")
     output.append(f"   Root Hash: {tree_root[:16]}...{tree_root[-16:] if tree_root else ''}")
     
     # Latest receipts
     latest_receipts = status.get('latest_receipts', [])
     if latest_receipts and isinstance(latest_receipts, list):
-        output.append("\n📜 Latest Receipts:")
+        output.append("\n[RECEIPTS] Latest Receipts:")
         for i, receipt in enumerate(latest_receipts[:5], 1):
             receipt_id = receipt.get('index', 'N/A')
             receipt_hash = receipt.get('receipt_hash', 'N/A')
@@ -96,7 +96,7 @@ def format_status(status: dict) -> str:
     errors = [f"Error querying {k}: {v['error']}" for k, v in status.items() 
               if isinstance(v, dict) and 'error' in v]
     if errors:
-        output.append("\n❌ Errors:")
+        output.append("\n[ERROR] Errors:")
         output.extend(f"   • {error}" for error in errors)
     
     output.append("=" * 60)

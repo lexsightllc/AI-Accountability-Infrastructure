@@ -1,0 +1,6 @@
+{
+  "kid": "test-key",
+  "public_key": "9c317f17b495bf94a4a401c8b94c087280e12f3a2e67561af79d52c1ab1ab9a2",
+  "private_key": "0b8bfebdcdcb334b32d4ac71617818ce3ade6d87b00c356282f9846740c0d082",
+  "algorithm": "Ed25519"
+}

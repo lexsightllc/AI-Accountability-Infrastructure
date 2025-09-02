@@ -204,7 +204,7 @@ def main():
         model_name="gpt-4",
         model_version="2023-06-01"
     )
-    print("   ✓ Receipt generated")
+    print("   [OK] Receipt generated")
     
     # Sign the receipt (in a real app, you'd have a private key)
     print("\n2. Signing the receipt...")
@@ -213,7 +213,7 @@ def main():
     if os.path.exists(private_key_path):
         success, message = client.sign_receipt(receipt, private_key_path)
         if success:
-            print("   ✓ Receipt signed")
+            print("   [OK] Receipt signed")
         else:
             print(f"   ! Could not sign receipt: {message}")
     else:
@@ -225,7 +225,7 @@ def main():
     
     if os.path.exists(public_key_path):
         success, message = client.verify_receipt(receipt, public_key_path)
-        print(f"   {'✓' if success else '✗'} {message}")
+        print(f"   {'[OK]' if success else '[ERROR]'} {message}")
     else:
         print(f"   ! Public key not found at {public_key_path}, skipping verification")
     
@@ -234,7 +234,7 @@ def main():
     success, result = client.submit_receipt(receipt)
     
     if success:
-        print(f"   ✓ Receipt submitted successfully!")
+        print(f"   [OK] Receipt submitted successfully!")
         print(f"   Receipt ID: {result.get('index')}")
         print(f"   Receipt Hash: {result.get('receipt_hash')}")
         
@@ -243,7 +243,7 @@ def main():
         success, inclusion = client.check_inclusion(result.get('receipt_hash'))
         
         if success:
-            print("   ✓ Receipt is included in the log")
+            print("   [OK] Receipt is included in the log")
             print(f"   Merkle Root: {inclusion['proof'].get('merkle_root')}")
             print(f"   Tree Size: {inclusion['proof'].get('tree_size')}")
         else:

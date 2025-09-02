@@ -209,10 +209,10 @@ class LogManager:
             result = cursor.fetchone()
             
             if result and result[0] == 'ok':
-                messages.append(f"{Colors.OKGREEN}✓ Database integrity check passed{Colors.ENDC}")
+                messages.append(f"{Colors.OKGREEN}[OK] Database integrity check passed{Colors.ENDC}")
                 is_ok = True
             else:
-                messages.append(f"{Colors.FAIL}✗ Database integrity check failed{Colors.ENDC}")
+                messages.append(f"{Colors.FAIL}[X] Database integrity check failed{Colors.ENDC}")
                 messages.append(str(result))
                 is_ok = False
             
@@ -221,14 +221,14 @@ class LogManager:
             fk_issues = cursor.fetchall()
             
             if fk_issues:
-                messages.append(f"{Colors.WARNING}⚠ {len(fk_issues)} foreign key constraint violations found{Colors.ENDC}")
+                messages.append(f"{Colors.WARNING}[!] {len(fk_issues)} foreign key constraint violations found{Colors.ENDC}")
                 for issue in fk_issues[:5]:  # Show first 5 issues
                     messages.append(f"  - {issue}")
                 if len(fk_issues) > 5:
                     messages.append(f"  - ... and {len(fk_issues) - 5} more")
                 is_ok = False
             else:
-                messages.append(f"{Colors.OKGREEN}✓ No foreign key constraint violations{Colors.ENDC}")
+                messages.append(f"{Colors.OKGREEN}[OK] No foreign key constraint violations{Colors.ENDC}")
             
             # Get table info
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -346,10 +346,10 @@ def main():
         
         try:
             backup_path = manager.backup(backup_args.output, backup_args.compress)
-            print(f"{Colors.OKGREEN}✓ Backup created successfully: {backup_path}{Colors.ENDC}")
+            print(f"{Colors.OKGREEN}[OK] Backup created successfully: {backup_path}{Colors.ENDC}")
             return 0
         except Exception as e:
-            print(f"{Colors.FAIL}✗ Failed to create backup: {e}{Colors.ENDC}")
+            print(f"{Colors.FAIL}[X] Failed to create backup: {e}{Colors.ENDC}")
             return 1
     
     elif args.command == 'restore':

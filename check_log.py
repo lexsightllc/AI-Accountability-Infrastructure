@@ -162,12 +162,12 @@ def print_receipt(receipt_data: Dict[str, Any], show_details: bool = False) -> N
             policies = receipt['policies']
             
             if 'satisfied' in policies and policies['satisfied']:
-                print(f"  {Colors.OKGREEN}✓ Satisfied:{Colors.ENDC}")
+                print(f"  {Colors.OKGREEN}[OK] Satisfied:{Colors.ENDC}")
                 for policy in policies['satisfied']:
                     print(f"    - {policy}")
             
             if 'relaxed' in policies and policies['relaxed']:
-                print(f"  {Colors.WARNING}⚠ Relaxed:{Colors.ENDC}")
+                print(f"  {Colors.WARNING}[!] Relaxed:{Colors.ENDC}")
                 for policy in policies['relaxed']:
                     print(f"    - {policy}")
         
