@@ -1,7 +1,7 @@
 {
   "receipt_version": "1.0",
   "execution_id": "test-execution-123",
-  "issued_at": "2025-09-02 01:59:11.159879",
+  "issued_at": "2025-09-02T01:59:11.159879Z",
   "issuer": "https://example.com/",
   "model": {
     "name": "gpt-4",
@@ -17,7 +17,7 @@
     "alg": "EdDSA",
     "kid": "test-key",
     "sig": "MWBZ7E0Cdqo-wqDdL9GX4HW0gG55okjY01qct1W6NUVjuz5sj8Yq-VBAcyaHixlWdl4ddS7POdhoISShVX7fDQ",
-    "issued_at": "2025-09-02 01:59:11.168770"
+    "issued_at": "2025-09-02T01:59:11.168770Z"
   },
   "inputs": null,
   "log_entries": null,
