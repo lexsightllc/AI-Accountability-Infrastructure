@@ -1,6 +1,11 @@
 """Unit tests for core functionality."""
 
+import hashlib
+
+import pytest
+
 from ai_trust.core import KeyPair, canonicalize, create_receipt, verify_receipt
+from ai_trust.core.crypto import KeyStore, hash_sha256
 
 
 def test_canonicalization() -> None:
@@ -29,3 +34,20 @@ def test_receipt_creation_and_verification() -> None:
     assert receipt.status == "verified"
 
     assert verify_receipt(receipt, key_pair.public_bytes())
+
+
+def test_hash_sha256() -> None:
+    """hash_sha256 should match hashlib.sha256 output."""
+    data = b"abc"
+    assert hash_sha256(data) == hashlib.sha256(data).digest()
+
+
+def test_keystore_add_and_revoke() -> None:
+    """The KeyStore should return valid keys and enforce revocation."""
+    kp = KeyPair.generate(kid="test")
+    store = KeyStore()
+    store.add_key(kp)
+    assert store.get_key("test") is kp
+    store.revoke_key("test")
+    with pytest.raises(KeyError):
+        store.get_key("test")
