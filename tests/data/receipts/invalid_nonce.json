@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "issued_at": "2025-09-01T19:07:00.123Z",
+  "nonce": "short",
+  "alg": "Ed25519",
+  "hash_alg": "SHA-256",
+  "kid": "c72de6fe5cf8fc26ab73b04ad2352e7d88f7444994b632d0f977fbc2ed18e140",
+  "task_hash": "sha256:aQ-bIVb1ZU_6WMGtcdgVGuMrh2gyaK70VLuj79WUZ4I",
+  "model_hash": "sha256:LBevwd8jQpf8V6Ocmxi_UKRIeO1nvKhsPwDbGRTh98c",
+  "input_commitment": "sha256:7dRKmjloa_N4BYm5-KU4LGmN3pwdqkba1LPAKq06HfU",
+  "output_commitment": "sha256:hhSbl6v-j5nlLFXK_ZH81BUUXvyTSveZuw3IPgLv_co",
+  "policies": {
+    "satisfied": [
+      "P_SAFE_001"
+    ],
+    "relaxed": []
+  },
+  "costs": {
+    "latency_ms": 123,
+    "energy_j": 0.5
+  },
+  "payload_summary": "",
+  "canonical_hash": "sha256:CPTAC6NWAI31zum2yxTvRAHHJFm9Vk0K7pQVuU-g9Pc",
+  "signature": "1AWBX8ejf-d7FwedirZSny0aAL0pHFxq5eESBt3YzmmzNp5rA9fc3tE7b53cGHUURJZhlo55YjRPQL5PwSRlAA",
+  "transparency": {
+    "log_id": "log1",
+    "leaf_hash": "sha256:jwGkGjipsB04vyNrzWthmmLSq4Sk6q2Q4yXol0xbCGU",
+    "tree_size": 0,
+    "inclusion_proof": {
+      "leaf_index": 0,
+      "path": [],
+      "path_directions": ""
+    }
+  }
+}

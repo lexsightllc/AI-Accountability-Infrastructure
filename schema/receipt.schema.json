@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-trust/receipt.schema.json",
+  "title": "AI Trust Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version","issued_at","nonce","alg","hash_alg","kid","task_hash","model_hash",
+    "input_commitment","output_commitment","policies","costs","canonical_hash","signature","transparency"
+  ],
+  "properties": {
+    "schema_version": {"$ref": "#/$defs/schema_version"},
+    "issued_at": {"$ref": "#/$defs/issued_at"},
+    "nonce": {"$ref": "#/$defs/nonce"},
+    "alg": {"$ref": "#/$defs/alg"},
+    "hash_alg": {"$ref": "#/$defs/hash_alg"},
+    "kid": {"$ref": "#/$defs/kid"},
+    "task_hash": {"$ref": "#/$defs/hash"},
+    "model_hash": {"$ref": "#/$defs/hash"},
+    "input_commitment": {"$ref": "#/$defs/hash"},
+    "output_commitment": {"$ref": "#/$defs/hash"},
+    "policies": {"$ref": "#/$defs/policies"},
+    "costs": {"$ref": "#/$defs/costs"},
+    "payload_summary": {"$ref": "#/$defs/payload_summary"},
+    "canonical_hash": {"$ref": "#/$defs/hash"},
+    "signature": {"$ref": "#/$defs/signature"},
+    "transparency": {"$ref": "#/$defs/transparency"}
+  },
+  "$defs": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "Semantic version of the receipt schema"
+    },
+    "issued_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "description": "Timestamp in ISO 8601 UTC with milliseconds"
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{22,24}$",
+      "description": "128-bit random nonce encoded with base64url"
+    },
+    "alg": {
+      "type": "string",
+      "enum": ["Ed25519"],
+      "description": "Signature algorithm"
+    },
+    "hash_alg": {
+      "type": "string",
+      "enum": ["SHA-256"],
+      "description": "Hash algorithm"
+    },
+    "kid": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$|^did:key:[A-Za-z0-9:_-]+$",
+      "description": "Key identifier"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[A-Za-z0-9_-]{43,}$",
+      "description": "SHA-256 hash encoded in base64url with prefix"
+    },
+    "policies": {
+      "type": "object",
+      "required": ["satisfied","relaxed"],
+      "additionalProperties": false,
+      "properties": {
+        "satisfied": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "default": []
+        },
+        "relaxed": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "default": []
+        }
+      },
+      "description": "Policy identifiers satisfied or relaxed"
+    },
+    "costs": {
+      "type": "object",
+      "required": ["latency_ms","energy_j"],
+      "additionalProperties": false,
+      "properties": {
+        "latency_ms": {"type": "integer", "minimum": 0, "default": 0},
+        "energy_j": {"type": "number", "minimum": 0, "default": 0}
+      },
+      "description": "Cost metrics"
+    },
+    "payload_summary": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{0,88}$",
+      "description": "Optional base64url summary of prompt"
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$",
+      "description": "Ed25519 signature base64url without padding"
+    },
+    "transparency": {
+      "type": "object",
+      "required": ["log_id","leaf_hash","tree_size","inclusion_proof"],
+      "additionalProperties": false,
+      "properties": {
+        "log_id": {"type": "string"},
+        "leaf_hash": {"$ref": "#/$defs/hash"},
+        "tree_size": {"type": "integer", "minimum": 0},
+        "inclusion_proof": {
+          "type": "object",
+          "required": ["leaf_index","path","path_directions"],
+          "additionalProperties": false,
+          "properties": {
+            "leaf_index": {"type": "integer", "minimum": 0},
+            "path": {
+              "type": "array",
+              "items": {"type": "string", "pattern": "^[A-Za-z0-9_-]{43,}$"},
+              "default": []
+            },
+            "path_directions": {"type": "string", "pattern": "^[LR]*$", "default": ""}
+          }
+        }
+      },
+      "description": "Transparency log metadata"
+    }
+  }
+}
