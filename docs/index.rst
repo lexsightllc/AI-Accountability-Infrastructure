@@ -8,6 +8,7 @@ Welcome to AI Trust's documentation!
    :caption: Contents:
 
    getting-started
+   receipt_spec_v1
    api
    development
    contributing
