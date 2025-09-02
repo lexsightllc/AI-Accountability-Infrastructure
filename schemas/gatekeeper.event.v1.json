@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/gatekeeper.event.v1.json",
+  "title": "gatekeeper.event.v1",
+  "type": "object",
+  "required": [
+    "event_version",
+    "event_id",
+    "occurred_at",
+    "request",
+    "gate",
+    "model",
+    "artifacts",
+    "decision",
+    "telemetry"
+  ],
+  "properties": {
+    "event_version": {"const": "gatekeeper.event.v1"},
+    "event_id": {"type": "string", "format": "uuid"},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "trace_id": {"type": "string"},
+    "span_id": {"type": "string"},
+    "request": {
+      "type": "object",
+      "required": ["request_id", "session_id", "actor"],
+      "properties": {
+        "request_id": {"type": "string"},
+        "session_id": {"type": "string"},
+        "actor": {
+          "type": "object",
+          "required": ["role"],
+          "properties": {
+            "role": {"type": "string", "enum": ["user", "developer", "operator", "service"]},
+            "tenant": {"type": "string"},
+            "region": {"type": "string"}
+          }
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "required": ["id", "version", "policy_namespace"],
+      "properties": {
+        "id": {"type": "string"},
+        "version": {"type": "string"},
+        "policy_namespace": {"type": "string", "enum": ["gatekeeper", "safety", "compliance"]},
+        "git_commit": {"type": "string", "pattern": "^[0-9a-f]{7,40}$"},
+        "model_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["name", "version", "digest"],
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["input_commitment", "output_commitment"],
+      "properties": {
+        "input_commitment": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "output_commitment": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "aux_digests": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": ["action", "reason_code", "confidence"],
+      "properties": {
+        "action": {"type": "string", "enum": ["allow", "block", "review", "defer"]},
+        "reason_code": {"type": "string", "pattern": "^[A-Z]{2,8}_[A-Z0-9]{2,32}$"},
+        "rationale": {"type": "string"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "required": ["latency_ms"],
+      "properties": {
+        "latency_ms": {"type": "integer", "minimum": 0},
+        "compute_ms": {"type": "integer", "minimum": 0}
+      }
+    }
+  },
+  "additionalProperties": false
+}
