@@ -1,0 +1,11 @@
+{
+  "name": "ai-accountability-infrastructure",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "ajv": "^8.12.0"
+  },
+  "scripts": {
+    "test:schema": "node tests/js/test-schema.js"
+  }
+}
