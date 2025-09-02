@@ -1,0 +1,32 @@
+{
+  "event_version": "gatekeeper.event.v1",
+  "event_id": "00000000-0000-0000-0000-000000000000",
+  "occurred_at": "2024-01-01T00:00:00Z",
+  "request": {
+    "request_id": "req1",
+    "session_id": "sess1",
+    "actor": {"role": "user"}
+  },
+  "gate": {
+    "id": "pre_text_guard",
+    "version": "1.0.0",
+    "policy_namespace": "gatekeeper",
+    "git_commit": "deadbeef",
+    "model_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "model": {
+    "name": "chat",
+    "version": "v1",
+    "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "artifacts": {
+    "input_commitment": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "output_commitment": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "decision": {
+    "action": "allow",
+    "confidence": 0.9
+  },
+  "telemetry": {"latency_ms": 10}
+}
+
