@@ -51,3 +51,14 @@ def test_keystore_add_and_revoke() -> None:
     store.revoke_key("test")
     with pytest.raises(KeyError):
         store.get_key("test")
+
+
+def test_keypair_jwk_roundtrip() -> None:
+    """KeyPair should round-trip through JWK format."""
+    kp = KeyPair.generate(kid="jwk-test")
+    jwk = kp.to_jwk(private=True)
+    kp2 = KeyPair.from_jwk(jwk)
+    data = b"hello"
+    sig = kp2.sign(data)
+    assert kp2.verify(data, sig)
+    assert jwk["kid"] == kp2.kid
