@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import base64
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import ClassVar, cast
@@ -98,6 +99,62 @@ class KeyPair:
         """Create a KeyPair from private key bytes."""
         private_key = ed25519.Ed25519PrivateKey.from_private_bytes(private_bytes)
         return cls(private_key=private_key, public_key=private_key.public_key())
+
+    # ------------------------------------------------------------------
+    # JWK helpers
+    # ------------------------------------------------------------------
+    def to_jwk(self, private: bool = False) -> dict:
+        """Return the key in JSON Web Key (JWK) format.
+
+        Args:
+            private: If ``True`` include the private key material.  The default
+                is ``False`` which returns only the public key.
+        """
+
+        def _b64u(data: bytes) -> str:
+            return base64.urlsafe_b64encode(data).decode("ascii").rstrip("=")
+
+        jwk = {
+            "kty": "OKP",
+            "crv": "Ed25519",
+            "kid": self.kid,
+            "x": _b64u(self.public_bytes()),
+        }
+
+        if private:
+            private_bytes = cast(
+                "bytes",
+                self.private_key.private_bytes(
+                    encoding=serialization.Encoding.Raw,
+                    format=serialization.PrivateFormat.Raw,
+                    encryption_algorithm=serialization.NoEncryption(),
+                ),
+            )
+            jwk["d"] = _b64u(private_bytes)
+
+        return jwk
+
+    @classmethod
+    def from_jwk(cls, jwk: dict) -> KeyPair:
+        """Construct a :class:`KeyPair` from JWK data."""
+
+        def _b64u_decode(data: str) -> bytes:
+            padding = "=" * (-len(data) % 4)
+            return base64.urlsafe_b64decode(data + padding)
+
+        if jwk.get("kty") != "OKP" or jwk.get("crv") != "Ed25519":
+            raise ValueError("Unsupported JWK parameters")
+
+        public_bytes = _b64u_decode(jwk["x"])
+        public_key = ed25519.Ed25519PublicKey.from_public_bytes(public_bytes)
+
+        if "d" in jwk:
+            private_bytes = _b64u_decode(jwk["d"])
+            private_key = ed25519.Ed25519PrivateKey.from_private_bytes(private_bytes)
+        else:
+            raise ValueError("JWK does not contain private key material")
+
+        return cls(private_key=private_key, public_key=public_key, kid=jwk.get("kid"))
 
 
 def create_keypair() -> KeyPair:
