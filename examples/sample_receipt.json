@@ -1,0 +1,21 @@
+{
+  "receipt_version": "1.0",
+  "issued_at": "2025-09-01T19:07:00Z",
+  "task_hash": "sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+  "model_hash": "sha256:4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e",
+  "input_commitment": "sha256:7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7k",
+  "output_commitment": "sha256:0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7k8l9m0n",
+  "policies": {
+    "satisfied": ["P_SAFE_001", "P_PRIV_007"],
+    "relaxed": []
+  },
+  "costs": {
+    "latency_ms": 4210,
+    "energy_j": 7.3,
+    "tokens": 1284
+  },
+  "attestation": {
+    "signature": "ed25519:VGVzdFNpZ25hdHVyZQ==",
+    "pubkey_id": "test_key_2025"
+  }
+}
