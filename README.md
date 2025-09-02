@@ -25,6 +25,10 @@ A minimal, extensible standard for cryptographically verifiable AI system accoun
 - Public read access with inclusion proofs
 - Tamper-evident storage
 
+## 📚 Documentation
+
+For detailed documentation and examples, check out the [Claude AI Artifact](https://claude.ai/public/artifacts/6f841464-05b3-4f27-99c8-18b752f82798).
+
 ## Quick Start
 
 ```bash
