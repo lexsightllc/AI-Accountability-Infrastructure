@@ -9,6 +9,9 @@ url = "sqlite:///./ai_trust.db"
 echo = false
 
 [security]
+# It is CRITICAL to override this in production environments using environment variables
+# (e.g., SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-production"))
+# or a dedicated secrets management system.
 secret_key = "change-me-in-production"
 algorithm = "HS256"
 access_token_expire_minutes = 30
