@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "issued_at": "2024-01-20T12:34:56Z",
+  "nonce": "short",
+  "alg": "Ed25519",
+  "hash_alg": "SHA-256",
+  "kid": "1d32803321072127267fdf530a74f36b5ddb1b56c75c2ae93d8c78c4a1d247d3",
+  "task_hash": "sha256:J0Jhp8B9e4TXj3L1Hev2CBw4h5B7EfhCR8uVk5HunNw",
+  "model_hash": "sha256:0Q_lmYxPbny837RnXyXn_kmAUKd_o5kJh0MytZCLVpQ",
+  "input_commitment": "sha256:_Wz0_zSNmfkd9UrSmaAiRvksA9pKR7Vfv-Dk1ciK2vc",
+  "output_commitment": "sha256:vwjn7oq2gupsWEEsN-42c76ij_8g_VyL8iXxHvGbKdg",
+  "policies": {
+    "satisfied": ["TOS_ACCEPTED"],
+    "relaxed": []
+  },
+  "costs": {
+    "latency_ms": 123,
+    "energy_j": 1.23
+  },
+  "canonical_hash": "sha256:73fJYign1MeZWsahX7RzgoJ-hDsOxa_S0KvMBdv4jPg",
+  "signature": "mFn3Ea8z6ZM4ytfbQ8xUgwt8SQNTQ2pZpxz73oEcyTheVMIU-n983MtV-Uec6qeF4NYXGCvQzXJHTlEFJ7yXVg"
+}
