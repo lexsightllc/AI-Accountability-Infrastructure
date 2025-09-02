@@ -155,215 +155,216 @@ class TestTransparencyLog:
     """Test cases for the TransparencyLog class."""
     
     @pytest.fixture
-def temp_dir(self):
-    """Create a temporary directory for testing."""
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield temp_dir
+    def temp_dir(self):
+        """Create a temporary directory for testing."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            yield temp_dir
 
-def test_append_and_retrieve_receipt(self, temp_dir):
-    """Test appending and retrieving a receipt from the log."""
-    log = TransparencyLog(storage_dir=temp_dir)
-    
-    # Append a receipt
-    receipt_json = json.dumps(SAMPLE_RECEIPT)
-    index, receipt_hash = log.append_receipt(receipt_json)
-    
-    assert index == 0
-    assert receipt_hash == hashlib.sha256(receipt_json.encode()).hexdigest()
-    
-    # Retrieve the receipt
-    entry = log.get_receipt(index)
-    assert entry is not None
-    assert entry.index == 0
-    assert entry.receipt_hash == receipt_hash
-    assert entry.receipt == receipt_json
-    
-    # Try retrieving by hash
-    entry_by_hash = log.get_receipt(receipt_hash)
-    assert entry_by_hash is not None
-    assert entry_by_hash.index == index
-    assert entry_by_hash.receipt_hash == receipt_hash
-
-def test_duplicate_receipt(self, temp_dir):
-    """Test that duplicate receipts are detected."""
-    log = TransparencyLog(storage_dir=temp_dir)
-    receipt_json = json.dumps(SAMPLE_RECEIPT)
-    
-    # First append should succeed
-    index1, receipt_hash1 = log.append_receipt(receipt_json)
-    
-    # Second append with same content should return same index and hash
-    index2, receipt_hash2 = log.append_receipt(receipt_json)
-    
-    assert index1 == index2
-    assert receipt_hash1 == receipt_hash2
-    
-    # Verify only one entry in the log
-    assert log.get_tree_size() == 1
-
-def test_inclusion_proof(self, temp_dir):
-    """Test generating and verifying inclusion proofs."""
-    log = TransparencyLog(storage_dir=temp_dir)
-    
-    # Add a receipt
-    receipt_json = json.dumps(SAMPLE_RECEIPT)
-    index, receipt_hash = log.append_receipt(receipt_json)
-    
-    # Get inclusion proof
-    proof = log.get_inclusion_proof(index)
-    assert proof is not None
-    assert proof.index == 0
-    assert proof.tree_size == 1
-    assert proof.leaf_hash == log.get_receipt(index).merkle_leaf_hash
-    
-    # Verify the proof
-    assert log.merkle_tree.verify_proof(proof)
-
-def test_multiple_receipts(self, temp_dir):
-    """Test with multiple receipts in the log."""
-    log = TransparencyLog(storage_dir=temp_dir)
-    
-    # Add multiple receipts
-    receipts = []
-    for i in range(3):
-        receipt = SAMPLE_RECEIPT.copy()
-        receipt["task_hash"] = f"sha256:{'a' * 60}{i:02x}"  # Make each receipt unique
-        receipt_json = json.dumps(receipt)
+    def test_append_and_retrieve_receipt(self, temp_dir):
+        """Test appending and retrieving a receipt from the log."""
+        log = TransparencyLog(storage_dir=temp_dir)
+        
+        # Append a receipt
+        receipt_json = json.dumps(SAMPLE_RECEIPT)
         index, receipt_hash = log.append_receipt(receipt_json)
-        receipts.append((index, receipt_hash, receipt_json))
     
-    # Verify all receipts are stored correctly
-    assert log.get_tree_size() == 3
-    
-    for index, receipt_hash, receipt_json in receipts:
+        # Verify the receipt was added correctly
+        assert index == 0
+        assert receipt_hash == hashlib.sha256(receipt_json.encode()).hexdigest()
+        
+        # Retrieve the receipt
         entry = log.get_receipt(index)
         assert entry is not None
-        assert entry.index == index
+        assert entry.index == 0
         assert entry.receipt_hash == receipt_hash
         assert entry.receipt == receipt_json
+    
+        # Try retrieving by hash
+        entry_by_hash = log.get_receipt(receipt_hash)
+        assert entry_by_hash is not None
+        assert entry_by_hash.index == index
+        assert entry_by_hash.receipt_hash == receipt_hash
+
+    def test_duplicate_receipt(self, temp_dir):
+        """Test that duplicate receipts are detected."""
+        log = TransparencyLog(storage_dir=temp_dir)
+        receipt_json = json.dumps(SAMPLE_RECEIPT)
         
-        # Verify inclusion proof
+        # First append should succeed
+        index1, receipt_hash1 = log.append_receipt(receipt_json)
+        
+        # Second append with same content should return same index and hash
+        index2, receipt_hash2 = log.append_receipt(receipt_json)
+        
+        assert index1 == index2
+        assert receipt_hash1 == receipt_hash2
+    
+        # Verify only one entry in the log
+        assert log.get_tree_size() == 1
+
+    def test_inclusion_proof(self, temp_dir):
+        """Test generating and verifying inclusion proofs."""
+        log = TransparencyLog(storage_dir=temp_dir)
+        
+        # Add a receipt
+        receipt_json = json.dumps(SAMPLE_RECEIPT)
+        index, receipt_hash = log.append_receipt(receipt_json)
+        
+        # Get inclusion proof
         proof = log.get_inclusion_proof(index)
         assert proof is not None
+        assert proof.index == 0
+        assert proof.tree_size == 1
+        assert proof.leaf_hash == log.get_receipt(index).merkle_leaf_hash
+        
+        # Verify the proof
         assert log.merkle_tree.verify_proof(proof)
+
+    def test_multiple_receipts(self, temp_dir):
+        """Test with multiple receipts in the log."""
+        log = TransparencyLog(storage_dir=temp_dir)
+        
+        # Add multiple receipts
+        receipts = []
+        for i in range(3):
+            receipt = SAMPLE_RECEIPT.copy()
+            receipt["task_hash"] = f"sha256:{'a' * 60}{i:02x}"  # Make each receipt unique
+            receipt_json = json.dumps(receipt)
+            index, receipt_hash = log.append_receipt(receipt_json)
+            receipts.append((index, receipt_hash, receipt_json))
+        
+        # Verify all receipts are stored correctly
+        assert log.get_tree_size() == 3
+        
+        for index, receipt_hash, receipt_json in receipts:
+            entry = log.get_receipt(index)
+            assert entry is not None
+            assert entry.index == index
+            assert entry.receipt_hash == receipt_hash
+            assert entry.receipt == receipt_json
+            
+            # Verify inclusion proof
+            proof = log.get_inclusion_proof(index)
+            assert proof is not None
+            assert log.merkle_tree.verify_proof(proof)
 
 
 class TestFlaskApp:
     """Test cases for the Flask application."""
     
     @pytest.fixture
-def client(self, tmp_path):
-    """Create a test client for the Flask app."""
-    app = create_app({
-        'TESTING': True,
-        'STORAGE_DIR': str(tmp_path / 'data')
-    })
-    
-    with app.test_client() as client:
-        with app.app_context():
-            yield client
+    def client(self, tmp_path):
+        """Create a test client for the Flask app."""
+        app = create_app({
+            'TESTING': True,
+            'STORAGE_DIR': str(tmp_path / 'data')
+        })
+        
+        with app.test_client() as client:
+            with app.app_context():
+                yield client
 
-def test_health_check(self, client):
-    """Test the health check endpoint."""
-    response = client.get('/health')
-    assert response.status_code == 200
-    data = json.loads(response.data)
-    assert data['status'] == 'healthy'
-    assert 'timestamp' in data
-    assert data['tree_size'] == 0
-    assert 'merkle_root' in data
+    def test_health_check(self, client):
+        """Test the health check endpoint."""
+        response = client.get('/health')
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert data['status'] == 'healthy'
+        assert 'timestamp' in data
+        assert data['tree_size'] == 0
+        assert 'merkle_root' in data
 
-def test_submit_receipt(self, client):
-    """Test submitting a receipt to the log."""
-    receipt_json = json.dumps(SAMPLE_RECEIPT)
-    
-    # Submit the receipt
-    response = client.post(
-        '/receipts',
-        data=receipt_json,
-        content_type='application/json'
-    )
-    
-    assert response.status_code == 201
-    data = json.loads(response.data)
-    assert data['status'] == 'success'
-    assert data['index'] == 0
-    assert 'receipt_hash' in data
-    assert 'merkle_root' in data
-    
-    # Verify the receipt was stored
-    response = client.get(f'/receipts/{data["receipt_hash"]}')
-    assert response.status_code == 200
-    receipt_data = json.loads(response.data)
-    assert receipt_data['receipt_hash'] == data['receipt_hash']
+    def test_submit_receipt(self, client):
+        """Test submitting a receipt to the log."""
+        receipt_json = json.dumps(SAMPLE_RECEIPT)
+        
+        # Submit the receipt
+        response = client.post(
+            '/receipts',
+            data=receipt_json,
+            content_type='application/json'
+        )
+        
+        assert response.status_code == 201
+        data = json.loads(response.data)
+        assert data['status'] == 'success'
+        assert data['index'] == 0
+        assert 'receipt_hash' in data
+        assert 'merkle_root' in data
+        
+        # Verify the receipt was stored
+        response = client.get(f'/receipts/{data["receipt_hash"]}')
+        assert response.status_code == 200
+        receipt_data = json.loads(response.data)
+        assert receipt_data['receipt_hash'] == data['receipt_hash']
 
-def test_get_receipt(self, client):
-    """Test retrieving a receipt by ID."""
-    # First submit a receipt
-    receipt_json = json.dumps(SAMPLE_RECEIPT)
-    response = client.post(
-        '/receipts',
-        data=receipt_json,
-        content_type='application/json'
-    )
-    assert response.status_code == 201
-    receipt_data = json.loads(response.data)
-    
-    # Get by index
-    response = client.get(f'/receipts/0')
-    assert response.status_code == 200
-    data = json.loads(response.data)
-    assert data['index'] == 0
-    assert data['receipt_hash'] == receipt_data['receipt_hash']
-    
-    # Get by hash
-    response = client.get(f'/receipts/{receipt_data["receipt_hash"]}')
-    assert response.status_code == 200
-    data = json.loads(response.data)
-    assert data['index'] == 0
+    def test_get_receipt(self, client):
+        """Test retrieving a receipt by ID."""
+        # First submit a receipt
+        receipt_json = json.dumps(SAMPLE_RECEIPT)
+        response = client.post(
+            '/receipts',
+            data=receipt_json,
+            content_type='application/json'
+        )
+        assert response.status_code == 201
+        receipt_data = json.loads(response.data)
+        
+        # Get by index
+        response = client.get('/receipts/0')
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert data['index'] == 0
+        assert data['receipt_hash'] == receipt_data['receipt_hash']
+        
+        # Get by hash
+        response = client.get(f'/receipts/{receipt_data["receipt_hash"]}')
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert data['index'] == 0
 
-def test_get_inclusion_proof(self, client):
-    """Test getting an inclusion proof for a receipt."""
-    # Submit a receipt
-    receipt_json = json.dumps(SAMPLE_RECEIPT)
-    response = client.post(
-        '/receipts',
-        data=receipt_json,
-        content_type='application/json'
-    )
-    assert response.status_code == 201
-    receipt_data = json.loads(response.data)
-    
-    # Get inclusion proof
-    response = client.get(f'/proofs/{receipt_data["receipt_hash"]}')
-    assert response.status_code == 200
-    proof = json.loads(response.data)
-    assert proof['index'] == 0
-    assert proof['tree_size'] == 1
-    assert 'leaf_hash' in proof
-    assert 'audit_path' in proof
-    assert 'merkle_root' in proof
+    def test_get_inclusion_proof(self, client):
+        """Test getting an inclusion proof for a receipt."""
+        # Submit a receipt
+        receipt_json = json.dumps(SAMPLE_RECEIPT)
+        response = client.post(
+            '/receipts',
+            data=receipt_json,
+            content_type='application/json'
+        )
+        assert response.status_code == 201
+        receipt_data = json.loads(response.data)
+        
+        # Get inclusion proof
+        response = client.get(f'/proofs/{receipt_data["receipt_hash"]}')
+        assert response.status_code == 200
+        proof = json.loads(response.data)
+        assert proof['index'] == 0
+        assert proof['tree_size'] == 1
+        assert 'leaf_hash' in proof
+        assert 'audit_path' in proof
+        assert 'merkle_root' in proof
 
-def test_get_merkle_root(self, client):
-    """Test getting the current Merkle root."""
-    response = client.get('/tree/root')
-    assert response.status_code == 200
-    data = json.loads(response.data)
-    assert 'tree_size' in data
-    assert 'root_hash' in data
+    def test_get_merkle_root(self, client):
+        """Test getting the current Merkle root."""
+        response = client.get('/tree/root')
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert 'tree_size' in data
+        assert 'root_hash' in data
 
-def test_get_tree_size(self, client):
-    """Test getting the current tree size."""
-    response = client.get('/tree/size')
-    assert response.status_code == 200
-    data = json.loads(response.data)
-    assert 'tree_size' in data
-    assert data['tree_size'] == 0
-    
-    # Add a receipt and check the size
-    receipt_json = json.dumps(SAMPLE_RECEIPT)
-    client.post('/receipts', data=receipt_json, content_type='application/json')
-    
-    response = client.get('/tree/size')
-    data = json.loads(response.data)
-    assert data['tree_size'] == 1
+    def test_get_tree_size(self, client):
+        """Test getting the current tree size."""
+        response = client.get('/tree/size')
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert 'tree_size' in data
+        assert data['tree_size'] == 0
+        
+        # Add a receipt and check the size
+        receipt_json = json.dumps(SAMPLE_RECEIPT)
+        client.post('/receipts', data=receipt_json, content_type='application/json')
+        
+        response = client.get('/tree/size')
+        data = json.loads(response.data)
+        assert data['tree_size'] == 1
