@@ -97,6 +97,10 @@ class KeyPair(BaseModel):
             return True
         except Exception:
             return False
+            
+    def encode_signature(self, signature: bytes) -> str:
+        """Encode a signature to base64url without padding."""
+        return base64.urlsafe_b64encode(signature).decode('ascii').rstrip('=')
     
     def to_jwk(self, private: bool = False) -> Dict:
         """Convert the key pair to a JWK (JSON Web Key)."""

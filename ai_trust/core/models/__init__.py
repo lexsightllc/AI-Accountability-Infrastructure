@@ -98,26 +98,33 @@ class LogEntry(BaseModel):
     """Reference to a transparency log entry."""
     log_id: str = Field(
         ...,
-        description="Unique identifier for the log."
+        description="ID of the log where this entry is stored."
     )
     leaf_index: int = Field(
         ...,
         ge=0,
-        description="Index of the leaf in the Merkle tree."
-    )
-    inclusion_proof: List[str] = Field(
-        ...,
-        min_items=1,
-        description="Merkle audit path from the leaf to the root."
+        description="Index of the entry in the log's Merkle tree."
     )
     tree_size: int = Field(
         ...,
-        ge=1,
-        description="Size of the tree when this entry was included."
+        ge=0,
+        description="Total number of entries in the log when this entry was added."
+    )
+    root_hash: Annotated[str, StringConstraints(pattern=r'^[a-f0-9]{64}$')] = Field(
+        ...,
+        description="Hex-encoded root hash of the Merkle tree."
     )
     timestamp: datetime = Field(
-        ...,
+        default_factory=datetime.utcnow,
         description="When the entry was added to the log."
+    )
+    inclusion_proof: Optional[List[Annotated[str, StringConstraints(pattern=r'^[a-f0-9]{64}$')]]] = Field(
+        None,
+        description="Optional Merkle inclusion proof hashes."
+    )
+    witness_id: str = Field(
+        ...,
+        description="ID of the witness providing the signature."
     )
 
 

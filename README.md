@@ -2,6 +2,8 @@
 
 **End‑to‑end verifiable AI accountability**
 
+[![Demo](https://img.shields.io/badge/View-Demo-2ea44f)](https://claude.ai/public/artifacts/6f841464-05b3-4f27-99c8-18b752f82798)
+
 A production‑ready framework for verifiable AI transparency and accountability. It couples cryptographic receipts, append‑only transparency logs, witness co‑signing, and gateway enforcement so that every AI response can be independently verified before it reaches users.
 
 ---

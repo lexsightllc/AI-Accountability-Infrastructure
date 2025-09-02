@@ -4,100 +4,176 @@ AI Trust Command Line Interface
 Provides commands for managing keys, signing receipts, and verifying them.
 """
 
-import base64
-import hashlib
 import json
 import os
 import sys
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 import click
-from pydantic import AnyHttpUrl
 
-from ai_trust.core.canonicalization import canonicalize, canonical_json_dumps
-from ai_trust.core.crypto import KeyPair, KeyStore, sign_receipt, verify_receipt, hash_sha256, compute_hmac_sha256
-from ai_trust.core.models import (
-    ExecutionID,
-    InputCommitment,
-    LogEntry,
-    ModelInfo,
-    OutputCommitment,
-    Receipt,
-    ReceiptVersion,
-    Signature,
-    WitnessSignature,
+from ai_trust.cli.commands import (
+    create_receipt,
+    generate_keypair,
+    init_log_db,
+    load_keypair,
+    load_receipt,
+    save_keypair,
+    save_receipt,
+    show_key,
+    submit_to_log,
+    verify_inclusion,
+    verify_receipt,
 )
 
 # Configure click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-# Global key store
-key_store = KeyStore()
-
-# Helper functions
-def load_receipt(file_path: str) -> Receipt:
-    """Load a receipt from a JSON file."""
-    try:
-        with open(file_path, 'r') as f:
-            data = json.load(f)
-        return Receipt(**data)
-    except Exception as e:
-        click.echo(f"Error loading receipt: {e}", err=True)
-        sys.exit(1)
-
-def save_receipt(receipt: Receipt, file_path: str) -> None:
-    """Save a receipt to a JSON file."""
-    try:
-        with open(file_path, 'w') as f:
-            # Convert the receipt to a dict and handle serialization
-            receipt_dict = receipt.model_dump()
-            
-            # Custom JSON encoder to handle special types
-            class CustomJSONEncoder(json.JSONEncoder):
-                def default(self, obj):
-                    # Handle datetime objects
-                    if hasattr(obj, 'isoformat'):
-                        return obj.isoformat()
-                    # Handle AnyHttpUrl objects
-                    if hasattr(obj, '__str__') and hasattr(obj, 'scheme'):
-                        return str(obj)
-                    # Let the base class handle it or raise TypeError
-                    return super().default(obj)
-            
-            # Convert the receipt to a dict with proper serialization
-            receipt_dict = json.loads(json.dumps(receipt_dict, cls=CustomJSONEncoder))
-            json.dump(receipt_dict, f, indent=2)
-        click.echo(f"Receipt saved to {file_path}")
-    except Exception as e:
-        click.echo(f"Error saving receipt: {e}", err=True)
-        sys.exit(1)
-
-def load_keypair(key_file: str) -> KeyPair:
-    """Load a key pair from a JSON file."""
-    try:
-        with open(key_file, 'r') as f:
-            key_data = json.load(f)
-        return KeyPair.from_jwk(key_data)
-    except Exception as e:
-        click.echo(f"Error loading key pair: {e}", err=True)
-        sys.exit(1)
-
-def save_keypair(key_pair: KeyPair, key_file: str) -> None:
-    """Save a key pair to a JSON file."""
-    try:
-        with open(key_file, 'w') as f:
-            json.dump(key_pair.to_jwk(private=True), f, indent=2)
-        click.echo(f"Key pair saved to {key_file}")
-    except Exception as e:
-        click.echo(f"Error saving key pair: {e}", err=True)
-        sys.exit(1)
-
 # Command groups
 @click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     """AI Trust - Cryptographic receipts for AI accountability."""
+    pass
+
+# Key management commands
+@cli.group()
+def keys():
+    """Manage cryptographic keys."""
+    pass
+
+@keys.command('generate')
+@click.option('--output', '-o', required=True, help='Output file for the key pair')
+@click.option('--kid', help='Key ID (default: auto-generated)')
+def generate_key(output: str, kid: Optional[str] = None):
+    """Generate a new Ed25519 key pair."""
+    generate_keypair(output, kid)
+
+@keys.command('show')
+@click.argument('key_file', type=click.Path(exists=True))
+def show_key_cmd(key_file: str):
+    """Show information about a key pair."""
+    show_key(key_file)
+
+# Receipt commands
+@cli.group()
+def receipt():
+    """Create and verify receipts."""
+    pass
+
+@receipt.command('create')
+@click.option('--key', '-k', 'key_file', required=True, help='Path to the key file')
+@click.option('--output', '-o', required=True, help='Output file for the receipt')
+@click.option('--issuer', '-i', required=True, help='Issuer URL (must be HTTPS)')
+@click.option('--model', '-m', 'model_name', required=True, help='Name of the AI model')
+@click.option('--model-version', help='Version of the AI model')
+@click.option('--model-commit', help='Git commit hash of the model')
+@click.option('--body-sha256', required=True, help='SHA-256 hash of the response body')
+@click.option('--content-type', help='Content type of the response')
+@click.option('--input', '-I', 'inputs', multiple=True, help='Input commitment (format: hmac:salt_id)')
+@click.option('--policy-json', help='Path to a JSON file containing policy information')
+@click.option('--extensions-json', help='Path to a JSON file containing extension fields')
+def create_receipt_cmd(
+    key_file: str,
+    output: str,
+    issuer: str,
+    model_name: str,
+    body_sha256: str,
+    content_type: Optional[str],
+    model_version: Optional[str],
+    model_commit: Optional[str],
+    inputs: List[str],
+    policy_json: Optional[str],
+    extensions_json: Optional[str],
+):
+    """Create and sign a new receipt."""
+    # Parse inputs
+    input_commitments = []
+    for input_str in inputs:
+        if ':' not in input_str:
+            click.echo(f"Invalid input format: {input_str}. Expected 'hmac:salt_id'", err=True)
+            sys.exit(1)
+        hmac, salt_id = input_str.split(':', 1)
+        input_commitments.append({'hmac': hmac, 'salt_id': salt_id, 'algorithm': 'SHA-256'})
+    
+    # Load policy if provided
+    policy = None
+    if policy_json:
+        try:
+            with open(policy_json, 'r') as f:
+                policy = json.load(f)
+        except Exception as e:
+            click.echo(f"Error loading policy: {e}", err=True)
+            sys.exit(1)
+    
+    # Load extensions if provided
+    extensions = None
+    if extensions_json:
+        try:
+            with open(extensions_json, 'r') as f:
+                extensions = json.load(f)
+        except Exception as e:
+            click.echo(f"Error loading extensions: {e}", err=True)
+            sys.exit(1)
+    
+    # Create the receipt
+    create_receipt(
+        key_file=key_file,
+        output=output,
+        issuer=issuer,
+        model_name=model_name,
+        body_sha256=body_sha256,
+        content_type=content_type,
+        model_version=model_version,
+        model_commit=model_commit,
+        inputs=input_commitments if input_commitments else None,
+        policy=policy,
+        extensions=extensions
+    )
+
+@receipt.command('verify')
+@click.argument('receipt_file', type=click.Path(exists=True))
+@click.option('--key', '-k', 'key_file', help='Path to the public key file')
+@click.option('--public-key', '-p', help='Public key as a hex string')
+def verify_receipt_cmd(receipt_file: str, key_file: Optional[str], public_key: Optional[str]):
+    """Verify a receipt's signature and contents."""
+    if not key_file and not public_key:
+        click.echo("Error: Either --key or --public-key must be provided", err=True)
+        sys.exit(1)
+    
+    verify_receipt(receipt_file, key_file, public_key)
+
+# Log commands
+@cli.group()
+def log():
+    """Interact with transparency logs."""
+    pass
+
+@log.command('submit')
+@click.option('--db', 'db_path', default='trust_log.db', help='Path to the log database')
+@click.argument('receipt_file', type=click.Path(exists=True))
+@click.option('--output', '-o', help='Output file for the updated receipt')
+def submit_to_log_cmd(db_path: str, receipt_file: str, output: Optional[str]):
+    """Submit a receipt to a transparency log."""
+    submit_to_log(db_path, receipt_file, output)
+
+@log.command('verify')
+@click.option('--db', 'db_path', default='trust_log.db', help='Path to the log database')
+@click.argument('receipt_file', type=click.Path(exists=True))
+def verify_inclusion_cmd(db_path: str, receipt_file: str):
+    """Verify that a receipt is included in the log."""
+    if not verify_inclusion(db_path, receipt_file):
+        sys.exit(1)
+
+# Initialize command
+@cli.command('init')
+@click.option('--db', 'db_path', default='trust_log.db', help='Path to the log database')
+def init_db(db_path: str):
+    """Initialize a new log database."""
+    try:
+        db = init_log_db(db_path)
+        click.echo(f"Initialized log database at {db_path}")
+    except Exception as e:
+        click.echo(f"Error initializing database: {e}", err=True)
+        sys.exit(1)
     pass
 
 # Key management commands
