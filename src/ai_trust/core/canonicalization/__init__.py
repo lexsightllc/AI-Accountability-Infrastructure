@@ -1,105 +1,71 @@
 """
-Deterministic JSON canonicalization (RFC 8785) implementation.
+Deterministic JSON canonicalization (minimal JCS-compatible subset).
 
-This module provides functions to convert Python objects to canonical JSON format
-suitable for cryptographic operations where byte-for-byte consistency is required.
+This module provides byte-stable serialization for signing and verification.
+It follows RFC 8785 principles: sorted object keys by code point, UTF-8 without BOM,
+lowercase booleans, null literal, arrays preserve order, no NaN/Infinity, and
+a deterministic rendering of numbers. For floats we use the shortest round-trippable
+decimal via Python's repr which is IEEE-754 aware on CPython 3.11+. If your threat
+model requires strict RFC 8785 number formatting, replace _render_number accordingly.
 """
+from __future__ import annotations
 
 import json
 import math
-import re
 from decimal import Decimal
-from typing import Any, Dict, List, Union, cast
+from typing import Any
 
-from pydantic import BaseModel, AnyHttpUrl
+def _render_number(x: int | float | Decimal) -> str:
+    if isinstance(x, bool):
+        return "true" if x else "false"
+    if isinstance(x, int):
+        return str(x)
+    if isinstance(x, Decimal):
+        if not x.is_finite():
+            raise ValueError("Non-finite Decimal not allowed")
+        s = format(x, 'f').rstrip('0').rstrip('.')
+        return s if s else "0"
+    if isinstance(x, float):
+        if math.isnan(x) or math.isinf(x):
+            raise ValueError("NaN/Infinity not allowed")
+        # Python 3.11+ float repr is shortest-roundtrip; remove trailing .0 for integers
+        s = repr(x)
+        if 'e' in s or 'E' in s:
+            # normalize exponent to uppercase E and strip + and leading zeros
+            mantissa, exp = s.lower().split('e')
+            sign = '-' if exp.startswith('-') else ''
+            exp_digits = exp.lstrip('+-').lstrip('0') or '0'
+            return f"{mantissa}E{sign}{exp_digits}"
+        if s.endswith('.0'):
+            return s[:-2]
+        return s
+    raise TypeError(f"Unsupported number type: {type(x)}")
 
-
-class CanonicalizationError(ValueError):
-    """Raised when canonicalization fails due to invalid input."""
-
-    pass
-
-
-def _is_finite_number(value: float) -> bool:
-    """Check if a number is finite and not NaN or infinite."""
-    return not (math.isnan(value) or math.isinf(value))
-
-
-def _canonicalize_value(value: Any) -> str:
-    """Recursively convert a Python value to its canonical JSON string representation."""
+def _canon(value: Any) -> str:
     if value is None:
         return "null"
     if isinstance(value, bool):
-        return str(value).lower()
-    if isinstance(value, (int, float)):
-        if not _is_finite_number(value):
-            raise CanonicalizationError(f"Non-finite number: {value}")
-        # Handle integers and floats in a way that preserves precision
-        if isinstance(value, int) or value.is_integer():
-            return str(int(value))
-        # Use Decimal for precise floating-point representation
-        return format(Decimal(str(value)).normalize(), "f").rstrip("0").rstrip(".")
+        return "true" if value else "false"
+    if isinstance(value, (int, float, Decimal)):
+        return _render_number(value)
     if isinstance(value, str):
-        # Escape special characters and wrap in quotes
-        return json.dumps(value, ensure_ascii=False)
-    if isinstance(value, (list, tuple)):
-        items = [_canonicalize_value(item) for item in value]
-        return f"[{','.join(items)}]"
+        return json.dumps(value, ensure_ascii=False, separators=(',', ':'))
+    if isinstance(value, list):
+        return "[" + ",".join(_canon(v) for v in value) + "]"
     if isinstance(value, dict):
-        return _canonicalize_object(value)
-    if isinstance(value, BaseModel):
-        return _canonicalize_object(value.dict(by_alias=True, exclude_unset=True))
-    if isinstance(value, AnyHttpUrl):
-        return json.dumps(str(value))
-    if hasattr(value, 'isoformat'):
-        # Handle datetime objects
-        return json.dumps(value.isoformat())
-    
-    raise CanonicalizationError(f"Unsupported type for canonicalization: {type(value)}")
+        items = sorted(value.items(), key=lambda kv: kv[0])
+        return "{" + ",".join(json.dumps(k, ensure_ascii=False, separators=(',', ':')) + ":" + _canon(v)
+                              for k, v in items) + "}"
+    raise TypeError(f"Unsupported type in canonicalization: {type(value)}")
 
+def canonical_json_dumps(obj: Any) -> str:
+    return _canon(obj)
 
-def _canonicalize_object(obj: Dict[str, Any]) -> str:
-    """Convert a dictionary to a canonical JSON object string."""
-    if not isinstance(obj, dict):
-        raise CanonicalizationError(f"Expected dict, got {type(obj).__name__}")
-    
-    # Sort keys by Unicode code point order
-    items = []
-    for key, value in sorted(obj.items(), key=lambda x: x[0]):
-        if not isinstance(key, str):
-            raise CanonicalizationError(f"Dictionary keys must be strings, got {type(key).__name__}")
-        items.append(f"{json.dumps(key)}:{_canonicalize_value(value)}")
-    
-    return "{" + ",".join(items) + "}"
+def canonicalize(obj: Any) -> bytes:
+    return canonical_json_dumps(obj).encode('utf-8')
 
-
-def canonicalize(data: Any) -> bytes:
-    """
-    Convert a Python object to canonical JSON bytes.
-    
-    Args:
-        data: The Python object to canonicalize (dict, list, or primitive)
-        
-    Returns:
-        bytes: The canonical JSON representation as UTF-8 bytes
-        
-    Raises:
-        CanonicalizationError: If the input cannot be canonicalized
-    """
-    try:
-        return _canonicalize_value(data).encode("utf-8")
-    except (TypeError, ValueError) as e:
-        raise CanonicalizationError(f"Failed to canonicalize data: {e}") from e
-
-
-def canonical_json_dumps(data: Any, **kwargs) -> str:
-    """
-    Convert a Python object to a canonical JSON string.
-    
-    This is a convenience wrapper around canonicalize() that returns a string.
-    """
-    return canonicalize(data).decode("utf-8")
-
+class CanonicalizationError(Exception):
+    pass
 
 def verify_canonical_equivalence(a: Any, b: Any) -> bool:
     """
@@ -107,4 +73,7 @@ def verify_canonical_equivalence(a: Any, b: Any) -> bool:
     
     This is useful for testing and verification purposes.
     """
-    return canonicalize(a) == canonicalize(b)
+    try:
+        return canonicalize(a) == canonicalize(b)
+    except Exception:
+        return False
