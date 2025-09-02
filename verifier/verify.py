@@ -11,7 +11,7 @@ import hashlib
 import base64
 import argparse
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Any, Optional
 
 # Optional cryptography import for Ed25519

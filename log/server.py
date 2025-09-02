@@ -15,10 +15,13 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Tuple, Union
 
-# Optional Flask import
+# Flask import
+# Flask imports
 FLASK_AVAILABLE = True
+
+# Import Flask and related modules
 try:
-    from flask import Flask, request, jsonify, Response
+    from flask import Flask, request, jsonify, Response, abort, make_response
     from flask.typing import ResponseReturnValue
     from werkzeug.exceptions import HTTPException, BadRequest, NotFound
     from werkzeug.serving import run_simple
@@ -27,6 +30,31 @@ try:
     from functools import wraps
 except ImportError:
     FLASK_AVAILABLE = False
+    # Provide dummy Flask class when not available
+    class Flask:
+        def __init__(self, *args, **kwargs):
+            raise ImportError("Flask is not installed. Please install it with 'pip install flask'")
+    
+    class ResponseReturnValue:
+        pass
+    
+    class HTTPException(Exception):
+        pass
+    
+    class BadRequest(Exception):
+        pass
+    
+    class NotFound(Exception):
+        pass
+    
+    def run_simple(*args, **kwargs):
+        raise ImportError("Werkzeug is not installed. Please install it with 'pip install werkzeug'")
+    
+    class TypedDict(dict):
+        __annotations__ = {}
+    
+    def wraps(f):
+        return lambda x: x
 
 
 @dataclass

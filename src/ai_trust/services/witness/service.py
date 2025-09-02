@@ -1,5 +1,4 @@
-""
-Witness Service
+"""Witness Service
 
 Monitors and verifies transparency logs, co-signing tree heads to ensure their integrity.
 """

@@ -103,7 +103,7 @@ def test_canonicalize_strings():
     assert canonicalize("backslash\\here") == b'"backslash\\\\here"'
     
     # Unicode characters
-    assert canonicalize("üñîçø∂é") == b'"üñîçø∂é"'
+    assert canonicalize("üñîçø∂é") == '\"üñîçø∂é\"'.encode('utf-8')
 
 
 def test_canonicalize_pydantic_models():

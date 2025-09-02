@@ -33,6 +33,8 @@ from ai_trust.core.models import (
     Signature,
     WitnessSignature,
 )
+from .core import MerkleTree, Node, MerkleTreeProof, ConsistencyProof
+from .core.app import create_app
 
 __all__ = [
     # Core functionality
@@ -41,7 +43,6 @@ __all__ = [
     "verify_canonical_equivalence",
     "KeyPair",
     "KeyStore",
-    "generate_keypair",
     "sign_receipt",
     "verify_receipt",
     # Models

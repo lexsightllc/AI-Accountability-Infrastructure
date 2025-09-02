@@ -11,6 +11,7 @@ from typing import List, Optional
 
 import click
 
+# Import legacy commands for backward compatibility
 from ai_trust.cli.commands import (
     create_receipt,
     generate_keypair,
@@ -25,6 +26,9 @@ from ai_trust.cli.commands import (
     verify_receipt,
 )
 
+# Import new verification commands
+from ai_trust.cli.verify import verify
+
 # Configure click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -33,6 +37,9 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def cli():
     """AI Trust - Cryptographic receipts for AI accountability."""
     pass
+
+# Add verify command group
+cli.add_command(verify, name="verify")
 
 # Key management commands
 @cli.group()
