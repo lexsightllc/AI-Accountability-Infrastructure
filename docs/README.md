@@ -57,7 +57,7 @@ ai-trust/
 │   └── cli/                 # aitrust CLI
 ├── docs/                    # Documentation & specs
 ├── examples/                # Minimal end-to-end examples
-├── sdks/                    # Language SDKs (py, ts)
+├── sdks/                    # Language SDKs (future work)
 └── tests/                   # Unit & integration tests
 ```
 

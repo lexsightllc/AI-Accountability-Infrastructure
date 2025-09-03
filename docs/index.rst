@@ -11,7 +11,8 @@ Welcome to AI Trust's documentation!
    receipt_spec_v1
    api
    development
-   contributing
+   ../CODE_OF_CONDUCT
+   ../CONTRIBUTING
 
 Indices and tables
 ==================

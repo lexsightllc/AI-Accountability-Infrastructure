@@ -1,6 +1,6 @@
-# AI Accountability - Quick Start Guide
+# AI Trust - Quick Start Guide
 
-This guide will help you get started with the AI Accountability project quickly.
+This guide will help you get started with the AI Trust project quickly.
 
 ## Prerequisites
 

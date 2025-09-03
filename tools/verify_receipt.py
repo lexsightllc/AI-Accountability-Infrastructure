@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Verify an AI accountability receipt.
+Verify an AI Trust receipt.
 
-This script verifies the signature and structure of an AI accountability receipt
+This script verifies the signature and structure of an AI Trust receipt
 using the verifier module. It provides detailed validation results including
 signature verification, timestamp validation, and policy compliance checks.
 """
@@ -13,10 +13,7 @@ import argparse
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-# Add the parent directory to the path so we can import the verifier
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from verifier.verifier import ReceiptVerifier, VerificationResult
+from ai_trust.services.verifier import ReceiptVerifier, VerificationResult
 
 def load_receipt(receipt_path: str) -> Dict[str, Any]:
     """Load a receipt from a JSON file."""

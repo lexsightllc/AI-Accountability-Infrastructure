@@ -1,10 +1,5 @@
 # Configuration file for the Sphinx documentation builder.
-import os
-import sys
 from datetime import datetime
-
-# Add the project directory to the path
-sys.path.insert(0, os.path.abspath(".."))
 
 # Project information
 project = "AI Trust"
@@ -17,6 +12,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_rtd_theme",
+    "myst_parser",
 ]
 
 templates_path = ["_templates"]

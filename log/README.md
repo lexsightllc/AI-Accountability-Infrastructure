@@ -1,6 +1,6 @@
-# AI Accountability Transparency Log
+# AI Trust Transparency Log
 
-An append-only transparency log for AI accountability receipts, providing cryptographic proof of inclusion for all logged receipts.
+An append-only transparency log for AI trust receipts, providing cryptographic proof of inclusion for all logged receipts.
 
 ## Features
 

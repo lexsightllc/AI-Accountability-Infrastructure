@@ -1,5 +1,5 @@
 """
-Main application module for the AI Accountability Infrastructure.
+Main application module for the AI Trust Infrastructure.
 
 This module initializes and configures the FastAPI application,
 including all API routes and middleware.
@@ -13,8 +13,8 @@ from ai_trust.api import router as api_router
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
     app = FastAPI(
-        title="AI Accountability Infrastructure",
-        description="API for managing AI accountability logs and proofs",
+        title="AI Trust Infrastructure",
+        description="API for managing AI trust logs and proofs",
         version="0.1.0",
     )
 
