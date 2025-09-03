@@ -1,6 +1,6 @@
-# AI Accountability Verification Guide
+# AI Trust Verification Guide
 
-This guide provides comprehensive documentation for the AI Accountability verification system, including usage examples, API reference, and best practices.
+This guide provides comprehensive documentation for the AI Trust verification system, including usage examples, API reference, and best practices.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -16,7 +16,7 @@ This guide provides comprehensive documentation for the AI Accountability verifi
 
 ## Overview
 
-The AI Accountability verification system provides tools for:
+The AI Trust verification system provides tools for:
 - Verifying digital signatures on accountability receipts
 - Validating receipt structure and content
 - Verifying inclusion in the transparency log

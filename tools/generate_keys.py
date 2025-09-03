@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate Ed25519 key pair for testing the AI Accountability Verifier.
+Generate Ed25519 key pair for testing the AI Trust Verifier.
 
 This script generates a new Ed25519 key pair and saves them to files.
 The private key is saved in PEM format, and the public key is saved in both

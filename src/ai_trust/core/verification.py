@@ -1,8 +1,8 @@
 """
-Verification Module for AI Accountability Infrastructure
+Verification Module for AI Trust Infrastructure
 
 This module provides functionality to verify receipts and their inclusion in the
-Merkle tree, ensuring data integrity and accountability.
+Merkle tree, ensuring data integrity and trust.
 """
 
 import json

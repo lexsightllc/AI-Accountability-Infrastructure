@@ -1,6 +1,6 @@
 # Project Structure
 
-This document outlines the organization of the AI Accountability Infrastructure project.
+This document outlines the organization of the AI Trust Infrastructure project.
 
 ## Root Directory
 

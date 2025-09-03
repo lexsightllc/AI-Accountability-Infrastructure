@@ -1,7 +1,7 @@
 """
-AI Accountability Verifier
+AI Trust Verifier
 
-This module provides functionality to verify AI accountability receipts.
+This module provides functionality to verify AI Trust receipts.
 It includes validation of signatures, timestamps, and policy compliance.
 """
 

@@ -1,7 +1,7 @@
 """
-AI Accountability Transparency Log
+AI Trust Transparency Log
 
-This package provides an append-only transparency log for AI accountability receipts,
+This package provides an append-only transparency log for AI trust receipts,
 including Merkle tree-based verification and a REST API for interaction.
 """
 

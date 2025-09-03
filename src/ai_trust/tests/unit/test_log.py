@@ -1,4 +1,4 @@
-"""Tests for the AI Accountability Transparency Log."""
+"""Tests for the AI Trust Transparency Log."""
 
 import json
 import os

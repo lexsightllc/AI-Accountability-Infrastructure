@@ -1,6 +1,6 @@
-# Security Audit: AI Accountability Infrastructure
+# Security Audit: AI Trust Infrastructure
 
-This document outlines the security audit of the AI Accountability Infrastructure, focusing on cryptographic operations, data integrity, and potential vulnerabilities.
+This document outlines the security audit of the AI Trust Infrastructure, focusing on cryptographic operations, data integrity, and potential vulnerabilities.
 
 ## 1. Cryptographic Algorithms
 
@@ -149,7 +149,7 @@ This document outlines the security audit of the AI Accountability Infrastructur
 
 ## 9. Conclusion
 
-The AI Accountability Infrastructure implements strong cryptographic primitives and follows security best practices in most areas. However, there are several areas for improvement, particularly around data-at-rest encryption, secure memory handling, and input validation. Implementing the recommendations in this audit will significantly improve the security posture of the system.
+The AI Trust Infrastructure implements strong cryptographic primitives and follows security best practices in most areas. However, there are several areas for improvement, particularly around data-at-rest encryption, secure memory handling, and input validation. Implementing the recommendations in this audit will significantly improve the security posture of the system.
 
 ## 10. References
 

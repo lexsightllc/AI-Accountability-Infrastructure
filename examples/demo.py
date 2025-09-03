@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-AI Accountability Demo
-======================
+AI Trust Demo
+=============
 
-This script demonstrates how to use the AI Accountability tools:
+This script demonstrates how to use the AI Trust tools:
 1. Verify a receipt
 2. Start a transparency log server
 3. Submit a receipt to the log
@@ -12,17 +12,12 @@ This script demonstrates how to use the AI Accountability tools:
 
 import json
 import os
-import sys
 import time
 import threading
 import requests
-from pathlib import Path
 
-# Add parent directory to path to import our modules
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from verifier.verify import AIReceiptVerifier
-from log.server import run_server, TransparencyLog
+from ai_trust.services.verifier import AIReceiptVerifier
+from ai_trust.services.log.server import run_server, TransparencyLog
 
 # Configuration
 SAMPLE_RECEIPT_PATH = "examples/sample_receipt.json"
@@ -171,7 +166,7 @@ def main():
                 
                 # Print the final status
                 print_header("Demo Complete!")
-                print("Successfully demonstrated the AI Accountability tools:")
+                print("Successfully demonstrated the AI Trust tools:")
                 print("1. Verified a receipt")
                 print("2. Started a transparency log server")
                 print("3. Submitted a receipt to the log")

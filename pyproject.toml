@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-trust"
-description = "AI Accountability Infrastructure - A framework for transparent and verifiable AI operations"
+description = "AI Trust Infrastructure - A framework for transparent and verifiable AI operations"
 readme = "README.md"
 authors = [
     {name = "AI Trust Team", email = "team@aitrust.example.com"},

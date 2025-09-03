@@ -1,7 +1,7 @@
 """
 Transparency Log API
 
-A FastAPI-based service for submitting and verifying AI accountability receipts.
+A FastAPI-based service for submitting and verifying AI Trust receipts.
 This implements a basic transparency log with Merkle tree verification.
 """
 
@@ -17,7 +17,7 @@ from fastapi import FastAPI, HTTPException, Depends, status, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, validator
 
-from verifier.verifier import ReceiptVerifier, VerificationResult
+from ai_trust.services.verifier import ReceiptVerifier, VerificationResult
 
 # Constants
 DEFAULT_DB_PATH = "data/transparency_log.db"
@@ -79,8 +79,8 @@ class TreeStateResponse(BaseModel):
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="AI Accountability Transparency Log",
-    description="API for submitting and verifying AI accountability receipts",
+    title="AI Trust Transparency Log",
+    description="API for submitting and verifying AI trust receipts",
     version="1.0.0"
 )
 
@@ -323,7 +323,7 @@ class MerkleTree:
 async def root():
     """Root endpoint with API information."""
     return {
-        "name": "AI Accountability Transparency Log",
+        "name": "AI Trust Transparency Log",
         "version": "1.0.0",
         "documentation": "/docs"
     }

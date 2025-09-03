@@ -1,5 +1,10 @@
 import json
-from verifier.pocket_verifier import verify, load_jwks, jcs, b64url_encode
+from ai_trust.services.verifier.pocket_verifier import (
+    verify,
+    load_jwks,
+    jcs,
+    b64url_encode,
+)
 
 
 def load(path):

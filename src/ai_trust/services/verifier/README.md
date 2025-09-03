@@ -1,6 +1,6 @@
 # AI Receipt Verifier
 
-The AI Receipt Verifier is a Python module for validating AI accountability receipts according to the AI Accountability Standard v1.0.
+The AI Receipt Verifier is a Python module for validating AI Trust receipts according to the AI Trust Standard v1.0.
 
 ## Features
 

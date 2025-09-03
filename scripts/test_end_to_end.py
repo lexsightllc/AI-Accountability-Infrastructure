@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-End-to-End Test for AI Accountability System
+End-to-End Test for AI Trust System
 
-This script tests the complete flow of the AI Accountability system:
+This script tests the complete flow of the AI Trust system:
 1. Generate a sample receipt
 2. Sign the receipt with a test key
 3. Start the transparency log server
@@ -14,15 +14,12 @@ This script tests the complete flow of the AI Accountability system:
 import json
 import os
 import subprocess
-import sys
 import time
 from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
 
-# Add the parent directory to the path so we can import our modules
-sys.path.insert(0, str(Path(__file__).parent))
 
 # Configuration
 SERVER_URL = "http://localhost:5000"
@@ -268,7 +265,7 @@ def cleanup(server_process):
 
 def main():
     """Run the end-to-end test."""
-    print(f"{Colors.HEADER}{Colors.BOLD}AI Accountability System - End-to-End Test{Colors.ENDC}")
+    print(f"{Colors.HEADER}{Colors.BOLD}AI Trust System - End-to-End Test{Colors.ENDC}")
     print(f"{'-' * 60}")
     
     # Make sure test keys exist
@@ -302,7 +299,7 @@ def main():
             print_warning("Signature verification failed, but continuing with the test")
         
         print(f"\n{Colors.OKGREEN}{Colors.BOLD}✅ All tests passed!{Colors.ENDC}")
-        print(f"{Colors.OKGREEN}The AI Accountability system is working correctly.{Colors.ENDC}")
+        print(f"{Colors.OKGREEN}The AI Trust system is working correctly.{Colors.ENDC}")
         return 0
         
     except KeyboardInterrupt:

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-AI Accountability Client Example
+AI Trust Client Example
 
-This script demonstrates how to use the AI Accountability system to:
+This script demonstrates how to use the AI Trust system to:
 1. Generate a receipt for an AI operation
 2. Sign the receipt with a private key
 3. Submit the receipt to a transparency log
@@ -11,20 +11,16 @@ This script demonstrates how to use the AI Accountability system to:
 
 import json
 import os
-import sys
 import time
 from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
 
-# Add the parent directory to the path so we can import the verifier
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from ai_trust.services.verifier import AIReceiptVerifier
 
-from verifier.verify import AIReceiptVerifier
-
-class AIAccountabilityClient:
-    """Client for interacting with the AI Accountability system."""
+class AITrustClient:
+    """Client for interacting with the AI Trust system."""
     
     def __init__(self, server_url='http://localhost:5000', verify_ssl=True):
         """Initialize the client with the server URL."""
@@ -194,7 +190,7 @@ def main():
     client = AIAccountabilityClient(server_url='http://localhost:5000')
     
     print("=" * 60)
-    print("AI Accountability Client Example")
+    print("AI Trust Client Example")
     print("=" * 60)
     
     # Generate a sample receipt

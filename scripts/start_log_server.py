@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Start the AI Accountability Transparency Log server.
+Start the AI Trust Transparency Log server.
 
 This script provides a convenient way to start the transparency log server
 with configurable options.
@@ -8,14 +8,9 @@ with configurable options.
 
 import argparse
 import os
-from pathlib import Path
-
-# Add the parent directory to the path so we can import the log module
-import sys
-sys.path.insert(0, str(Path(__file__).parent))
 
 def main():
-    parser = argparse.ArgumentParser(description='Start the AI Accountability Transparency Log server')
+    parser = argparse.ArgumentParser(description='Start the AI Trust Transparency Log server')
     parser.add_argument('--host', default='127.0.0.1', help='Host to bind to (default: 127.0.0.1)')
     parser.add_argument('--port', type=int, default=5000, help='Port to listen on (default: 5000)')
     parser.add_argument('--debug', action='store_true', help='Enable debug mode')
@@ -35,7 +30,7 @@ def main():
     from flask import Flask
     
     # Create the app
-    from log.server import create_app
+    from ai_trust.services.log.server import create_app
     app = create_app({
         'STORAGE_DIR': os.environ['STORAGE_DIR'],
         'TESTING': False,
@@ -44,7 +39,7 @@ def main():
     
     # Print startup message
     print("=" * 60)
-    print("AI Accountability Transparency Log Server")
+    print("AI Trust Transparency Log Server")
     print("=" * 60)
     print(f"Storage directory: {os.path.abspath(args.storage_dir)}")
     print(f"Database file: {os.path.join(os.path.abspath(args.storage_dir), 'transparency_log.db')}")
